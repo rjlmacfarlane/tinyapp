@@ -41,16 +41,29 @@ app.get('/urls/:shortURL', (req, res) => {
   res.render('urls_show', templateVars);
 });
 
-// example code..
-app.get('/hello', (req, res) => {
-  res.send('<html><body>Hello <b>World</b></body></html>\n');
+// Post a new URL..
+app.post('/urls', (req, res) => {
+  console.log(req.body);
+  res.send('OK');
 });
 
-app.get('/set', (req, res) => {
-  const a = 1;
-  res.send(`a = ${a}`);
-});
+// eslint-disable-next-line func-style
+function generateRandomString() {
+  return Math.random().toString(36).substring(2,8);
+}
+
+
+
+// // example code..
+// app.get('/hello', (req, res) => {
+//   res.send('<html><body>Hello <b>World</b></body></html>\n');
+// });
+
+// app.get('/set', (req, res) => {
+//   const a = 1;
+//   res.send(`a = ${a}`);
+// });
  
-app.get('/fetch', (req, res) => {
-  res.send(`a = ${a}`);
-});
+// app.get('/fetch', (req, res) => {
+//   res.send(`a = ${a}`);
+// });
