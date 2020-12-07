@@ -41,10 +41,19 @@ app.get('/urls/:shortURL', (req, res) => {
   res.render('urls_show', templateVars);
 });
 
+// Redirect short URLs to target (long) URL:
+app.get('/u/:shortURL', (req, res) => {
+  console.log('Line 46');
+  const longURL = urlDatabase[req.params.shortURL];
+  res.redirect(longURL);
+});
+
 // Post a new URL..
 app.post('/urls', (req, res) => {
-  console.log(req.body);
-  res.send('OK');
+  const shortURL = generateRandomString();
+  const longURL = req.body.longURL;
+  urlDatabase[shortURL] = longURL;
+  res.redirect(`/urls/${shortURL}`);
 });
 
 // eslint-disable-next-line func-style
