@@ -56,6 +56,13 @@ app.post('/urls', (req, res) => {
   res.redirect(`/urls/${shortURL}`);
 });
 
+// Delete a tiny URL entry..
+app.post('/urls/:shortURL/delete', (req, res) => {
+  const shortURL = req.params.shortURL;
+  delete urlDatabase[shortURL];
+  res.redirect('/urls');
+});
+
 // eslint-disable-next-line func-style
 function generateRandomString() {
   return Math.random().toString(36).substring(2,8);
