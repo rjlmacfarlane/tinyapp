@@ -13,6 +13,20 @@ const urlDatabase = {
   '9sm5xK': 'http://www.google.com'
 };
 
+const users = {
+  "userRandomID": {
+    id: "userRandomID",
+    email: "user@example.com",
+    password: "purple-monkey-dinosaur"
+  },
+  "user2RandomID": {
+    id: "user2RandomID",
+    email: "user2@example.com",
+    password: "dishwasher-funk"
+  }
+};
+
+
 // basic server I/O...
 app.get('/', (req, res) => {
   res.send('Hello!');
@@ -34,7 +48,6 @@ app.get('/urls', (req, res) => {
   };
   res.render('urls_index', templateVars);
 });
-
 
 // Create a new shortened URL..
 app.get('/urls/new', (req, res) => {
@@ -58,10 +71,31 @@ app.get('/u/:shortURL', (req, res) => {
   res.redirect(longURL);
 });
 
+// Register
+app.get('/register', (req, res) => {
+  const templateVars = {
+    username: req.cookies["username"]
+  };
+  console.log(req.cookies["username"]);
+  res.render('register', templateVars);
+});
+
+app.post('/register', (req, res) => {
+  console.log(users);
+  const uid = generateUid();
+  const newUser = {
+    id: uid,
+    email: req.body.email,
+    password: req.body.password
+  };
+  users[uid] = newUser;
+  res.cookie('username', req.body.email);
+  res.redirect('/urls');
+});
+
 // Login
 app.post('/login', (req, res) => {
   res.cookie('username', req.body.username);
-  // console.log('Line 64', req.cookies["username"]);
   res.redirect('/urls');
 });
 
@@ -95,10 +129,14 @@ app.post('/urls/:shortURL/delete', (req, res) => {
   res.redirect('/urls');
 });
 
-// eslint-disable-next-line func-style
-function generateRandomString() {
+
+const generateRandomString = function() {
   return Math.random().toString(36).substring(2,8);
-}
+};
+
+const generateUid = function() {
+  return Math.floor((1 + Math.random()) * 0x10000).toString(16).substring(1);
+};
 
 
 
