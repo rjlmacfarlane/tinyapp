@@ -2,8 +2,11 @@ const express = require('express');
 const app = express();
 const PORT = 8080;
 const bodyParser = require('body-parser');
+const cookieParser = require('cookie-parser');
+
 app.set('view engine', 'ejs');
 app.use(bodyParser.urlencoded({extended: true}));
+app.use(cookieParser());
 
 const urlDatabase = {
   'b2xVn2': 'http://www.lighthouselabs.ca',
@@ -25,9 +28,13 @@ app.get('/urls.json', (req, res) => {
 
 // res.renders..
 app.get('/urls', (req, res) => {
-  const templateVars = { urls: urlDatabase };
+  const templateVars = {
+    urls: urlDatabase,
+    username: req.cookies["username"]
+  };
   res.render('urls_index', templateVars);
 });
+
 
 // Create a new shortened URL..
 app.get('/urls/new', (req, res) => {
@@ -37,7 +44,11 @@ app.get('/urls/new', (req, res) => {
 // Retrive long URL by short URL..
 app.get('/urls/:shortURL', (req, res) => {
   const shortURL = req.params.shortURL;
-  const templateVars = { shortURL: shortURL, longURL: urlDatabase[shortURL] };
+  const templateVars = {
+    shortURL: shortURL,
+    longURL: urlDatabase[shortURL],
+    username: req.cookies["username"],
+  };
   res.render('urls_show', templateVars);
 });
 
@@ -45,6 +56,19 @@ app.get('/urls/:shortURL', (req, res) => {
 app.get('/u/:shortURL', (req, res) => {
   const longURL = urlDatabase[req.params.shortURL];
   res.redirect(longURL);
+});
+
+// Login
+app.post('/login', (req, res) => {
+  res.cookie('username', req.body.username);
+  // console.log('Line 64', req.cookies["username"]);
+  res.redirect('/urls');
+});
+
+// Logout
+app.post('/logout', (req, res) => {
+  res.clearCookie('username');
+  res.redirect('/urls');
 });
 
 // Post a new URL..
@@ -57,13 +81,9 @@ app.post('/urls', (req, res) => {
 
 // Edit an existing URL..
 app.post('/urls/:shortURL/edit', (req, res) => {
-  console.log('Line 60');
   const shortURL = req.params.shortURL;
-  console.log('Short URL', shortURL);
   const longURL = req.body.longURL;
-  console.log('Long URL', longURL);
-  console.log(urlDatabase[shortURL] = longURL);
-  console.log(urlDatabase);
+  urlDatabase[shortURL] = longURL;
   res.redirect('/urls');
 });
 
