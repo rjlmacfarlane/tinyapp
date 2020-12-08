@@ -1,19 +1,27 @@
 <!DOCTYPE html>
+<!-- urls_show.ejs -->
 <%- include('partials/_header') %>
 <head>
   <!-- Bootstrap CSS -->
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
-  <title>URL - Tiny App Example</title>
+  <title>URL - Tiny App</title>
 </head>
 <body>
   <div class ="card text-center">
     <div class="card header"></div>
     <div class="card-body">
-     <h5 class="card title">TinyURL for: <%= longURL %></h5>
+     <h4 class="card title">TinyURL for: <%= longURL %></h4>
      <p class="card-text">Short URL: <a href="/u/<%= shortURL %>"><%= shortURL %></a></p>
-     <p class="card-text"><a href=/urls/new>Shorten a new URL</a></p>
     </div>
     <div class="card-footer text-muted"></div>
+  </div>
+  <div class="card-footer text-muted">
+    <h2>Edit</h2>
+    <form class="form-inline justify-content-center"  action="/urls/<%= shortURL %>/edit" method=POST>
+      <label for="longURL">New URL:</label>
+      <input class="form-control" type="text" name="longURL" placeholder="http://" style="margin: 1em">
+      <button type="submit" class="btn btn-info">Submit</button>
+    </form>
   </div>
 <!-- Bootstrap JS -->
 <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
