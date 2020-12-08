@@ -13,19 +13,7 @@ const urlDatabase = {
   '9sm5xK': 'http://www.google.com'
 };
 
-const users = {
-  "userRandomID": {
-    id: "userRandomID",
-    email: "user@example.com",
-    password: "purple-monkey-dinosaur"
-  },
-  "user2RandomID": {
-    id: "user2RandomID",
-    email: "user2@example.com",
-    password: "dishwasher-funk"
-  }
-};
-
+const users = new Object;
 
 // basic server I/O...
 app.get('/', (req, res) => {
@@ -42,9 +30,10 @@ app.get('/urls.json', (req, res) => {
 
 // res.renders..
 app.get('/urls', (req, res) => {
+  const userID = req.cookies['user_id'];
   const templateVars = {
     urls: urlDatabase,
-    username: req.cookies["username"]
+    user: users[userID]
   };
   res.render('urls_index', templateVars);
 });
@@ -76,12 +65,10 @@ app.get('/register', (req, res) => {
   const templateVars = {
     username: req.cookies["username"]
   };
-  console.log(req.cookies["username"]);
   res.render('register', templateVars);
 });
 
 app.post('/register', (req, res) => {
-  console.log(users);
   const uid = generateUid();
   const newUser = {
     id: uid,
@@ -89,7 +76,7 @@ app.post('/register', (req, res) => {
     password: req.body.password
   };
   users[uid] = newUser;
-  res.cookie('username', req.body.email);
+  res.cookie('user_id', uid);
   res.redirect('/urls');
 });
 
