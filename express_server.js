@@ -92,15 +92,6 @@ app.get('/register', (req, res) => {
   res.render('register', templateVars);
 });
 
-// Login (GET => render)
-app.get('/login', (req, res) => {
-  const userID = req.cookies['user_id'];
-  const templateVars = {
-    user: userID
-  };
-  res.render('login', templateVars);
-});
-
 // Register (POST => redirect)   Declare templateVars at top, remove lets
 app.post('/register', (req, res) => {
   res.clearCookie('user_id');
@@ -134,10 +125,17 @@ app.post('/register', (req, res) => {
     res.cookie('user_id', uid);
     res.redirect('/urls');
   }
-  // console.log(users);
+});
+// Login (GET => render)
+app.get('/login', (req, res) => {
+  const userID = req.cookies['user_id'];
+  const templateVars = {
+    user: userID
+  };
+  res.render('login', templateVars);
 });
 
-// Login
+// Login (POST => redirect)
 app.post('/login', (req, res) => {
   res.clearCookie('user_id');
   const { email, password } = req.body;
@@ -167,7 +165,7 @@ app.post('/urls', (req, res) => {
 });
 
 // Edit an existing URL..
-app.post('/urls/:shortURL/edit', (req, res) => {   // app.post should be without /edit
+app.post('/urls/:shortURL/', (req, res) => {   // app.post should be without /edit
   const shortURL = req.params.shortURL;
   const longURL = req.body.longURL;
   urlDatabase[shortURL] = longURL;
@@ -185,17 +183,3 @@ app.post('/urls/:shortURL/delete', (req, res) => {
 app.listen(PORT, () => {
   console.log(`TinyApp listening on port ${PORT}...`);
 });
-
-// // example code..
-// app.get('/hello', (req, res) => {
-//   res.send('<html><body>Hello <b>World</b></body></html>\n');
-// });
-
-// app.get('/set', (req, res) => {
-//   const a = 1;
-//   res.send(`a = ${a}`);
-// });
- 
-// app.get('/fetch', (req, res) => {
-//   res.send(`a = ${a}`);
-// });
