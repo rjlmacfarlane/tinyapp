@@ -1,8 +1,9 @@
 const express = require('express');
-const app = express();
-const PORT = 8080;
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
+
+const app = express();
+const PORT = 8080;
 
 app.set('view engine', 'ejs');
 app.use(bodyParser.urlencoded({extended: true}));
@@ -31,9 +32,14 @@ const getUserEmail = function(email, users) {
   } return false;
 };
 
+// const urlDatabase = {
+//   'b2xVn2': 'http://www.lighthouselabs.ca',
+//   '9sm5xK': 'http://www.google.com'
+// };
+
 const urlDatabase = {
-  'b2xVn2': 'http://www.lighthouselabs.ca',
-  '9sm5xK': 'http://www.google.com'
+  b6UTxQ: { longURL: "https://www.tsn.ca", userID: "aJ48lW" },
+  i3BoGr: { longURL: "https://www.google.ca", userID: "aJ48lW" }
 };
 
 // basic server I/O...
@@ -57,12 +63,15 @@ app.get('/urls', (req, res) => {
 
 // Create a new shortened URL..
 app.get('/urls/new', (req, res) => {
-  const userID = req.cookies['user_id'];
-  const templateVars = {
-    urls: urlDatabase, // Probably don't need this - check!
-    user: users[userID]
-  };
-  res.render('urls_new', templateVars);
+  if (req.cookies['user_id']) {
+    const userID = req.cookies['user_id'];
+    const templateVars = {
+      user: users[userID]
+    };
+    res.render('urls_new', templateVars);
+  } else {
+    res.redirect('/login');
+  }
 });
 
 // Retrive long URL by short URL..
@@ -70,16 +79,16 @@ app.get('/urls/:shortURL', (req, res) => {
   const shortURL = req.params.shortURL;
   const userID = req.cookies['user_id'];
   const templateVars = {
+    user: userID,
     shortURL: shortURL,
-    longURL: urlDatabase[shortURL],
-    user: userID
+    urls: urlDatabase
   };
   res.render('urls_show', templateVars);
 });
 
 // Redirect short URLs to target (long) URL:
 app.get('/u/:shortURL', (req, res) => {
-  const longURL = urlDatabase[req.params.shortURL];
+  const longURL = urlDatabase[req.params.shortURL].longURL;
   res.redirect(longURL);
 });
 
@@ -96,8 +105,9 @@ app.get('/register', (req, res) => {
 app.post('/register', (req, res) => {
   res.clearCookie('user_id');
   const { email, password } = req.body;
+  let templateVars;
   if (!email || !password) {
-    let templateVars = {
+    templateVars = {
       status: 401,
       message: 'Email or Password must not be blank.',
       user: 'undefined'
@@ -107,7 +117,7 @@ app.post('/register', (req, res) => {
   }
   const user = getUserEmail(email, users);
   if (user) {
-    let templateVars = {
+    templateVars = {
       status: 409,
       message: 'Email already registered.',
       user: 'undefined'
@@ -165,19 +175,26 @@ app.post('/urls', (req, res) => {
 });
 
 // Edit an existing URL..
-app.post('/urls/:shortURL/', (req, res) => {   // app.post should be without /edit
-  const shortURL = req.params.shortURL;
-  const longURL = req.body.longURL;
-  urlDatabase[shortURL] = longURL;
-  res.redirect('/urls');
+app.post('/urls/:shortURL/edit', (req, res) => {
+  if (req.cookies['user_id']) {
+    const shortURL = req.params.shortURL;
+    const longURL = req.body.longURL;
+    urlDatabase[shortURL].longURL = longURL;
+    res.redirect('/urls');
+  } else {
+    res.status(403).send('You must be logged in to edit URLs');
+  }
 });
 
 // Delete a tiny URL entry..
 app.post('/urls/:shortURL/delete', (req, res) => {
-  const shortURL = req.params.shortURL;
-  delete urlDatabase[shortURL];
-  console.log(urlDatabase);
-  res.redirect('/urls');
+  if (req.cookies['user_id']) {
+    const shortURL = req.params.shortURL;
+    delete urlDatabase[shortURL];
+    res.redirect('/urls');
+  } else {
+    res.status(403).send('You must be logged in to delete URLs');
+  }
 });
 
 app.listen(PORT, () => {
