@@ -10,18 +10,21 @@
         <a class="nav-item nav-link" href="/urls/new">Create New URL</a>
       </div>
     </div>
-    <% if (user) { %>
+    <% if ((typeof user == 'undefined') || (user === null) || (user === '')) { %>
 
-      <form class="form-inline" action="/logout" method="POST" style="margin: 1em">
-        <%= user.email %>
-        <button type="submit" class="btn btn-outline-light" style="margin: 1em">Logout</button>
+      <form class="form-inline" action ="/login" method="GET">
+        <button type="submit" class="btn btn-outline-light" style="margin-right: 1em">Login</button>
+      </form>
+
+      <form class="form-inline" action="/register" method="GET">
+        <button type="submit" class="btn btn-outline-light">Register</button>
       </form>
 
     <% } else { %>
 
-      <form class="form-inline" action ="/login" method="POST">
-        <input class="form-control" type="text" name="username" id="username" style="margin: 1em">
-      <button type="submit" class="btn btn-outline-light" style="margin-right: 1em">Login</button>
+      <form class="form-inline" action="/logout" method="POST" style="margin: 1em">
+        <p>Logged in as: <%= user.email %></p>
+        <button type="submit" class="btn btn-outline-light" style="margin: 1em">Logout</button>
       </form>
         
     <% } %>
