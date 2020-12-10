@@ -8,13 +8,20 @@ _________  ___  ________       ___    ___      ________  ________  ________
         \|__|  \|__|\|__| \|__|\___/ /             \|__|\|__|\|__|     \|__|
                               \|___|/    v. 1.0.0
 
-               A URL shortener webapp with userbase functionality.
-    
-               Submitted to Lighthouse Labs on 2020-12-10.
+                A URL shortener webapp with userbase functionality.
+                           ~ First evaluated project ~
+                    Submitted to Lighthouse Labs on 2020-12-10
 
                Credit is due to the entire November 23 cohort, with
                special appreciation to the mentors, instructors, and
                Mahsa Arabameri for their contributions and encouragement.
+
+               Developed by Ryan MacFarlane (Halifax, Nova Scotia)
+               * Contact the developer at: rjl.macfarlane@gmail.com
+               * Github: https://github.com/rjlmacfarlane
+               
+                         Built with Node and Express
+               
 */
 
 const express = require('express');
@@ -41,9 +48,15 @@ const addURL = function(longURL, userID) {
   return shortURL;
 };
 const urlDatabase = {
-  b6UTxQ: { longURL: "https://www.tsn.ca", userID: "aJ48lW" },
-  i3BoGr: { longURL: "https://www.google.ca", userID: "aJ48lW" }
+  b6UTxQ: { longURL: "https://www.lighthouselabs.ca/", userID: "aJ48lW" },
+  i3BoGr: { longURL: "https://www.ubuntu.com/", userID: "aJ48lW" }
 };
+
+/* Routes BEGIN */
+
+/*******************************************
+ *  Site Navigation & URL Handling Routes: *
+********************************************/
 
 // Redirect '/' to login page:
 app.get('/', (req, res) => {
@@ -89,7 +102,7 @@ app.get('/urls/:shortURL', (req, res) => {
     shortURL: shortURL,
     urls: urlDatabase
   };
-  console.log(templateVars);
+  
   res.render('urls_show', templateVars);
 });
 
@@ -98,6 +111,51 @@ app.get('/u/:shortURL', (req, res) => {
   const longURL = urlDatabase[req.params.shortURL].longURL;
   res.redirect(longURL);
 });
+
+// Post a new URL:
+app.post('/urls', (req, res) => {
+  const userID = req.session.user_id;
+  const longURL = req.body.longURL;
+  const shortURL = addURL(longURL, userID);
+  res.redirect(`/urls/${shortURL}`);
+});
+
+// Edit an existing URL:
+app.post('/urls/:shortURL/edit', (req, res) => {
+  const userID = req.session.user_id;
+  const shortURL = req.params.shortURL;
+  const longURL = req.body.longURL;
+  
+  if (urlDatabase[shortURL] && userID === urlDatabase[shortURL].userID) {
+    urlDatabase[shortURL].longURL = longURL;
+    res.redirect('/urls');
+  
+  } else {
+  
+    res.status(403).send('You must be logged in to edit URLs');
+  }
+});
+
+// Delete a URL from user's database:
+app.post('/urls/:shortURL/delete', (req, res) => {
+  const shortURL = req.params.shortURL;
+  const userID = req.session.user_id;
+  
+  if (urlDatabase[shortURL] && userID === urlDatabase[shortURL].userID) {
+    delete urlDatabase[shortURL];
+    res.redirect('/urls');
+  
+  } else {
+  
+    res.status(403).send('You must be logged in to delete URLs');
+  
+  }
+});
+
+
+/*******************************************
+ *  Account creation/action routes:        *
+********************************************/
 
 // Register a new account (GET => render):
 app.get('/register', (req, res) => {
@@ -160,7 +218,9 @@ app.post('/register', (req, res) => {
       req.session.user_id = uid;
       res.redirect('/urls');
     }
+
   } else {
+
     res.redirect('/urls');
   }
 });
@@ -204,45 +264,7 @@ app.post('/logout', (req, res) => {
   res.redirect('/login');
 });
 
-// Post a new URL:
-app.post('/urls', (req, res) => {
-  const userID = req.session.user_id;
-  const longURL = req.body.longURL;
-  const shortURL = addURL(longURL, userID);
-  res.redirect(`/urls/${shortURL}`);
-});
-
-// Edit an existing URL:
-app.post('/urls/:shortURL/edit', (req, res) => {
-  const userID = req.session.user_id;
-  const shortURL = req.params.shortURL;
-  const longURL = req.body.longURL;
-  
-  if (urlDatabase[shortURL] && userID === urlDatabase[shortURL].userID) {
-    urlDatabase[shortURL].longURL = longURL;
-    res.redirect('/urls');
-  
-  } else {
-  
-    res.status(403).send('You must be logged in to edit URLs');
-  }
-});
-
-// Delete a tiny URL entry:
-app.post('/urls/:shortURL/delete', (req, res) => {
-  const shortURL = req.params.shortURL;
-  const userID = req.session.user_id;
-  
-  if (urlDatabase[shortURL] && userID === urlDatabase[shortURL].userID) {
-    delete urlDatabase[shortURL];
-    res.redirect('/urls');
-  
-  } else {
-  
-    res.status(403).send('You must be logged in to delete URLs');
-  
-  }
-});
+/* Routes END */
 
 app.listen(PORT, () => {
   console.log(`TinyApp listening on port ${PORT}...`);
