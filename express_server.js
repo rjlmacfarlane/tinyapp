@@ -153,6 +153,7 @@ app.post('/register', (req, res) => {
     };
   
     users[uid] = newUser;
+    // eslint-disable-next-line camelcase
     req.session.user_id = uid;
     res.redirect('/urls');
   }
@@ -185,6 +186,7 @@ app.post('/login', (req, res) => {
   
   } else {
     
+    // eslint-disable-next-line camelcase
     req.session.user_id = user[0].id;
     res.redirect('/urls');
   }

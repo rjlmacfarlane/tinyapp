@@ -1,5 +1,3 @@
-const urlDatabase = require('./express_server.js');
-
 // Helper functions:
 
 // Generate a faux-random string (for URL shortening):
