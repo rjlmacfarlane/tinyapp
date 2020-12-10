@@ -1,3 +1,5 @@
+const urlDatabase = require('./express_server.js');
+
 // Helper functions:
 
 // Generate a faux-random string (for URL shortening):
@@ -30,11 +32,4 @@ const urlsForUser = function(id, urlDatabase) {
   return output;
 };
 
-// Add a URL to the urlDatabase object:
-const addURL = function(longURL, userID) {
-  const shortURL = generateRandomString();
-  urlDatabase[shortURL] = { longURL, userID };
-  return shortURL;
-};
-
-module.exports = { generateRandomString, generateUid, getUserEmail, urlsForUser, addURL };
+module.exports = { generateRandomString, generateUid, getUserEmail, urlsForUser };

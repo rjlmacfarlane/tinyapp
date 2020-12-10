@@ -21,7 +21,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const bcrypt = require('bcrypt');
 const cookieSession = require('cookie-session');
-const { generateUid, getUserEmail, urlsForUser, addURL } = require('./helper_functions.js');
+const { generateRandomString, generateUid, getUserEmail, urlsForUser } = require('./helper_functions.js');
 
 const app = express();
 const PORT = 8080;
@@ -34,6 +34,12 @@ app.use(cookieSession({
   keys: ['key1', 'key2'],
 }));
 
+// URL Database and its companion function:
+const addURL = function(longURL, userID) {
+  const shortURL = generateRandomString();
+  urlDatabase[shortURL] = { longURL, userID };
+  return shortURL;
+};
 const urlDatabase = {
   b6UTxQ: { longURL: "https://www.tsn.ca", userID: "aJ48lW" },
   i3BoGr: { longURL: "https://www.google.ca", userID: "aJ48lW" }
@@ -41,7 +47,8 @@ const urlDatabase = {
 
 // Redirect '/' to login page:
 app.get('/', (req, res) => {
-  res.redirect('/login');
+  delete req.session.user_id;
+  res.redirect('/register');
 });
 
 // Display URLS (Filtered by User ID):
@@ -82,7 +89,7 @@ app.get('/urls/:shortURL', (req, res) => {
     shortURL: shortURL,
     urls: urlDatabase
   };
-  
+  console.log(templateVars);
   res.render('urls_show', templateVars);
 });
 
@@ -232,3 +239,5 @@ app.post('/urls/:shortURL/delete', (req, res) => {
 app.listen(PORT, () => {
   console.log(`TinyApp listening on port ${PORT}...`);
 });
+
+module.exports = { urlDatabase };
