@@ -12,9 +12,9 @@ This is a learning project created as part of the education curriculum at Lighth
 
 ## Final Product
 
-!["Your own secure account"](https://github.com/rjlmacfarlane/tinyapp/blob/master/screenshots/register.png)
-!["Create your Custom URLS"](https://github.com/rjlmacfarlane/tinyapp/blob/master/screenshots/newurl.png)
-!["Manage your URLS"](https://github.com/rjlmacfarlane/tinyapp/blob/master/screenshots/editurls.png)
+!["Your own secure account"](https://github.com/rjlmacfarlane/tinyapp/blob/master/docs/user_register.png)
+!["Create your Custom URLS"](https://github.com/rjlmacfarlane/tinyapp/blob/master/docs/new_url.png)
+!["Manage your URLS"](https://github.com/rjlmacfarlane/tinyapp/blob/master/docs/manage_urls.png)
 
 ## Getting Started
 
