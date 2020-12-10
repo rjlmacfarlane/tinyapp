@@ -1,6 +1,7 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
+const bcrypt = require('bcrypt');
 
 const app = express();
 const PORT = 8080;
@@ -137,10 +138,12 @@ app.post('/register', (req, res) => {
     res.render('reg_error', templateVars);
   } else {
     const uid = generateUid();
+    const password = req.body.password;
+    const hashedPassword = bcrypt.hashSync(password, 10);
     const newUser = {
       id: uid,
       email: req.body.email,
-      password: req.body.password
+      password: hashedPassword
     };
     users[uid] = newUser;
     res.cookie('user_id', uid);
@@ -164,7 +167,7 @@ app.post('/login', (req, res) => {
   const user = getUserEmail(email, users);
   if (!user) {
     res.status(403).send('Email not found');
-  } else if (user[0].password !== password) {
+  } else if (!bcrypt.compareSync(password, user[0].password)) {
     res.status(403).send('Password incorrect');
   } else {
     res.cookie('user_id', user[0].id);
@@ -191,9 +194,14 @@ app.post('/urls/:shortURL/edit', (req, res) => {
   const userID = req.cookies['user_id'];
   const shortURL = req.params.shortURL;
   const longURL = req.body.longURL;
+  const templateVars = {
+    user: userID,
+    shortURL: shortURL,
+    longURL: longURL
+  };
   if (urlDatabase[shortURL] && userID === urlDatabase[shortURL].userID) {
     urlDatabase[shortURL].longURL = longURL;
-    res.redirect('/urls');
+    res.redirect('/urls', templateVars);
   } else {
     res.status(403).send('You must be logged in to edit URLs');
   }
