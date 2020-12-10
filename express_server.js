@@ -48,7 +48,7 @@ const urlDatabase = {
 // Redirect '/' to login page:
 app.get('/', (req, res) => {
   delete req.session.user_id;
-  res.redirect('/register');
+  res.redirect('/login');
 });
 
 // Display URLS (Filtered by User ID):
@@ -101,6 +101,7 @@ app.get('/u/:shortURL', (req, res) => {
 
 // Register a new account (GET => render):
 app.get('/register', (req, res) => {
+
   const userID = req.session.user_id;
   
   const templateVars = {
@@ -112,49 +113,54 @@ app.get('/register', (req, res) => {
 
 // Register a new account (POST => redirect):
 app.post('/register', (req, res) => {
-  const { email, password } = req.body;
-  let templateVars;
-  
-  if (!email || !password) {
-  
-    templateVars = {
-      status: 401,
-      message: 'Email or Password must not be blank.',
-      user: 'undefined'
-    };
-  
-    res.status(401);
-    return res.render('reg_error', templateVars);
-  }
-  
-  const user = getUserEmail(email, users);
-  
-  if (user) {
-  
-    templateVars = {
-      status: 409,
-      message: 'Email already registered.',
-      user: 'undefined'
-  
-    };
-    res.status(409);
-    res.render('reg_error', templateVars);
-  
+  if (!req.session.user_id) {
+
+    const { email, password } = req.body;
+    let templateVars;
+    
+    if (!email || !password) {
+    
+      templateVars = {
+        status: 401,
+        message: 'Email or Password must not be blank.',
+        user: 'undefined'
+      };
+    
+      res.status(401);
+      return res.render('reg_error', templateVars);
+    }
+    
+    const user = getUserEmail(email, users);
+    
+    if (user) {
+    
+      templateVars = {
+        status: 409,
+        message: 'Email already registered.',
+        user: 'undefined'
+    
+      };
+      res.status(409);
+      res.render('reg_error', templateVars);
+    
+    } else {
+    
+      const uid = generateUid();
+      const password = req.body.password;
+      const hashedPassword = bcrypt.hashSync(password, 10);
+    
+      const newUser = {
+        id: uid,
+        email: req.body.email,
+        password: hashedPassword
+      };
+    
+      users[uid] = newUser;
+      // eslint-disable-next-line camelcase
+      req.session.user_id = uid;
+      res.redirect('/urls');
+    }
   } else {
-  
-    const uid = generateUid();
-    const password = req.body.password;
-    const hashedPassword = bcrypt.hashSync(password, 10);
-  
-    const newUser = {
-      id: uid,
-      email: req.body.email,
-      password: hashedPassword
-    };
-  
-    users[uid] = newUser;
-    // eslint-disable-next-line camelcase
-    req.session.user_id = uid;
     res.redirect('/urls');
   }
 });
@@ -195,7 +201,7 @@ app.post('/login', (req, res) => {
 // Logout:
 app.post('/logout', (req, res) => {
   delete req.session.user_id;
-  res.redirect('/urls');
+  res.redirect('/login');
 });
 
 // Post a new URL:
