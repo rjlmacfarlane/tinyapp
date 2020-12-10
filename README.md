@@ -10,9 +10,9 @@ TinyApp is a full stack web application built with Node and Express that allows 
 
 ## Final Product
 
-!["Home page"]()
-!["Your URLs page"]()
-!["The specific TinyURL page"]()
+!["Your own secure account"](https://github.com/rjlmacfarlane/tinyapp/blob/master/screenshots/register.png)
+!["Create your Custom URLS"](https://github.com/rjlmacfarlane/tinyapp/blob/master/screenshots/newurl.png)
+!["Manage your URLS"](https://github.com/rjlmacfarlane/tinyapp/blob/master/screenshots/editurls.png)
 
 ## Getting Started
 
