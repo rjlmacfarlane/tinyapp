@@ -7,7 +7,7 @@ This is a learning project created as part of the education curriculum at Lighth
 ## Features
 
 - Shorten URLs.
-- Share this TinyURL and see how many times it was used, when, and by who.
+- Share this TinyURL to your friends with ease!
 - You made a typo in your URL when creating it? You can edit or delete it!
 
 ## Final Product
