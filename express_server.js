@@ -7,15 +7,12 @@ _________  ___  ________       ___    ___      ________  ________  ________
        \ \__\ \ \__\ \__\\ \__\__/  / /           \ \__\ \__\ \__\    \ \__\
         \|__|  \|__|\|__| \|__|\___/ /             \|__|\|__|\|__|     \|__|
                               \|___|/    v. 1.0.0
-
                 A URL shortener webapp with userbase functionality.
                            ~ First evaluated project ~
                     Submitted to Lighthouse Labs on 2020-12-10
-
                Credit is due to the entire November 23 cohort, with
                special appreciation to the mentors, instructors, and
                Mahsa Arabameri for their contributions and encouragement.
-
                Developed by Ryan MacFarlane (Halifax, Nova Scotia)
                * Contact the developer at: rjl.macfarlane@gmail.com
                * Github: https://github.com/rjlmacfarlane
@@ -32,7 +29,7 @@ const { generateRandomString, generateUid, getUserEmail, urlsForUser } = require
 
 const app = express();
 const PORT = 8080;
-const users = new Object; // Database Object for all users (email, password, userid)
+const users = {}; // Database Object for all users (email, password, userid)
 
 app.set('view engine', 'ejs');
 app.use(bodyParser.urlencoded({extended: true}));
@@ -43,8 +40,10 @@ app.use(cookieSession({
 
 // URL Database and its companion function:
 const addURL = function(longURL, userID) {
+  console.log('hit');
   const shortURL = generateRandomString();
   urlDatabase[shortURL] = { longURL, userID };
+  console.log(urlDatabase);
   return shortURL;
 };
 const urlDatabase = {
@@ -97,13 +96,17 @@ app.get('/urls/:shortURL', (req, res) => {
   const shortURL = req.params.shortURL;
   const userID = req.session.user_id;
   
-  const templateVars = {
-    user: users[userID],
-    shortURL: shortURL,
-    urls: urlDatabase
-  };
+  if (urlDatabase[shortURL] && userID === urlDatabase[shortURL].userID) {
   
-  res.render('urls_show', templateVars);
+    const templateVars = {
+      user: users[userID],
+      shortURL: shortURL,
+      urls: urlDatabase
+    };
+    res.render('urls_show', templateVars);
+  } else {
+    res.status(403).send('You must be logged in to view this URL.');
+  }
 });
 
 // Redirect short URLs to target (long) URL:

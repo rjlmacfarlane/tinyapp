@@ -12,8 +12,8 @@ const generateUid = function() {
 
 // Lookup user by email address:
 const getUserEmail = function(email, users) {
-  for (let i in users) {
-    if (users[i].email === email) {
+  for (let address in users) {
+    if (users[address].email === email) {
       return Object.values(users);
     }
   } return false;
@@ -22,9 +22,9 @@ const getUserEmail = function(email, users) {
 // Filter URLs in database by user ID:
 const urlsForUser = function(id, urlDatabase) {
   let output = {};
-  for (let i of Object.keys(urlDatabase)) {
-    if (urlDatabase[i].userID === id) {
-      output[i] = urlDatabase[i];
+  for (let uid of Object.keys(urlDatabase)) {
+    if (urlDatabase[uid].userID === id) {
+      output[uid] = urlDatabase[uid];
     }
   }
   return output;
