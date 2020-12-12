@@ -6,7 +6,8 @@ _________  ___  ________       ___    ___      ________  ________  ________
       \ \  \ \ \  \ \  \\ \  \   \/  /  /        \ \  \ \  \ \  \___|\ \  \___|
        \ \__\ \ \__\ \__\\ \__\__/  / /           \ \__\ \__\ \__\    \ \__\
         \|__|  \|__|\|__| \|__|\___/ /             \|__|\|__|\|__|     \|__|
-                              \|___|/    v. 1.0.0
+                              \|___|/    v. 1.0.1
+               
                 A URL shortener webapp with userbase functionality.
                            ~ First evaluated project ~
                     Submitted to Lighthouse Labs on 2020-12-10
@@ -17,7 +18,7 @@ _________  ___  ________       ___    ___      ________  ________  ________
                * Contact the developer at: rjl.macfarlane@gmail.com
                * Github: https://github.com/rjlmacfarlane
                
-                         Built with Node and Express
+                           Built with Node and Express
                
 */
 
@@ -40,10 +41,8 @@ app.use(cookieSession({
 
 // URL Database and its companion function:
 const addURL = function(longURL, userID) {
-  console.log('hit');
   const shortURL = generateRandomString();
   urlDatabase[shortURL] = { longURL, userID };
-  console.log(urlDatabase);
   return shortURL;
 };
 const urlDatabase = {
