@@ -177,15 +177,13 @@ app.post('/register', (req, res) => {
   if (!req.session.user_id) {
 
     const { email, password } = req.body;
-    let templateVars;
+    const templateVars = {};
     
     if (!email || !password) {
-    
-      templateVars = {
-        status: 401,
-        message: 'Email or Password must not be blank.',
-        user: 'undefined'
-      };
+      
+      templateVars.status = 401;
+      templateVars.message = 'Email or Password must not be blank.';
+      templateVars.user = 'undefined';
     
       res.status(401);
       return res.render('reg_error', templateVars);
@@ -195,12 +193,10 @@ app.post('/register', (req, res) => {
     
     if (user) {
     
-      templateVars = {
-        status: 409,
-        message: 'Email already registered.',
-        user: 'undefined'
+      templateVars.status = 409;
+      templateVars.message = 'Email already registered.';
+      templateVars.user = 'undefined';
     
-      };
       res.status(409);
       res.render('reg_error', templateVars);
     
