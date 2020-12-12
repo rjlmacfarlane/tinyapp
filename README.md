@@ -6,9 +6,9 @@ This is a learning project created as part of the education curriculum at Lighth
 
 ## Features
 
-- Shorten URLs.
+- Transform those pesky long URLs into handy short ones!
 - Share your TinyURLs to your friends with ease!
-- You made a typo in your URL when creating it? You can edit or delete it!
+- Made a typo? Don't need the URL anymore? You can edit or delete it!
 
 ## Final Product
 
