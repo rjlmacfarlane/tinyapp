@@ -244,11 +244,11 @@ app.post('/login', (req, res) => {
   
   if (!user) {
     
-    res.status(403).send('Email not found');
+    res.status(403).send('Email not found. Are you registered?');
   
   } else if (!bcrypt.compareSync(password, user[0].password)) {
     
-    res.status(403).send('Password incorrect');
+    res.status(403).send('Password incorrect.');
   
   } else {
     
